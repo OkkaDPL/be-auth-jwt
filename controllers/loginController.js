@@ -7,7 +7,7 @@ async function login(req, res) {
     const token = jwt.sign(
       { username: username, password: email },
       process.env.SECRET_KEY,
-      { expiresIn: "30s" }
+      { expiresIn: "10s" }
     );
 
     const refresh_token = jwt.sign(
@@ -17,11 +17,11 @@ async function login(req, res) {
     );
 
     const user = req.users;
-    res.cookie;
-    await user.update({ refresh_token: refresh_token });
-    res.cookie("token", token, { maxAge: 30000 });
 
-    res.end("oke");
+    await user.update({ refresh_token: refresh_token });
+    res.cookie("token", refresh_token, { maxAge: 60000 * 60, httpOnly: true });
+
+    res.json({ token: token });
   } catch (error) {
     res.status(500).json({ msg: error });
   }
